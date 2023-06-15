@@ -10,6 +10,7 @@ on:
 
 jobs:
   test:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     steps:
@@ -29,8 +30,13 @@ jobs:
         run: |
           python -m pytest -v tests
 
+      - name: Build coverage file
+        run: |
+          python -m pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=app tests/ | tee pytest-coverage.txt
+
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@main
+        
         with:
-          pytest-coverage-path: /workspaces/week1-devops/pytest-coverage.txt
-          junitxml-path: /workspaces/week1-devops/pytest.xml
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
